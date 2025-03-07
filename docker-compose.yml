@@ -1,0 +1,95 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: my_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypass
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+
+  airflow-init:
+    build: ./airflow
+    container_name: my_airflow_init
+    depends_on:
+      - db
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: mysql+mysqlconnector://myuser:mypass@db:3306/mydatabase
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW_UID: 50000
+      AIRFLOW__WEBSERVER__SECRET_KEY: "not very secure"
+    command: >
+      bash -c "
+      airflow db init &&
+      airflow users create --username admin --password admin \
+      --firstname Admin --lastname User --role Admin --email admin@example.com
+      "
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+
+  airflow-webserver:
+    build: ./airflow
+    container_name: my_airflow_webserver
+    depends_on:
+      - db
+      - airflow-init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: mysql+mysqlconnector://myuser:mypass@db:3306/mydatabase
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__WEBSERVER__WEB_SERVER_PORT: 8080
+      AIRFLOW_UID: 50000
+      AIRFLOW__WEBSERVER__SECRET_KEY: "not very secure"
+      DB_HOST: db
+      DB_USER: myuser
+      DB_PASSWORD: mypass
+      DB_NAME: mydatabase
+      DOWNLOAD_DIR: /opt/airflow/tmp
+    ports:
+      - "8080:8080"
+    command: "airflow webserver"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/tmp:/opt/airflow/tmp
+
+  airflow-scheduler:
+    build: ./airflow
+    container_name: my_airflow_scheduler
+    depends_on:
+      - db
+      - airflow-init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: mysql+mysqlconnector://myuser:mypass@db:3306/mydatabase
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW_UID: 50000
+      AIRFLOW__WEBSERVER__SECRET_KEY: "not very secure"
+      DB_HOST: db
+      DB_USER: myuser
+      DB_PASSWORD: mypass
+      DB_NAME: mydatabase
+      DOWNLOAD_DIR: /opt/airflow/tmp
+    command: "airflow scheduler"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/tmp:/opt/airflow/tmp
+
+  selenium:
+    container_name: remote_chromedriver
+    image: seleniarm/standalone-chromium:latest
+    ports:
+      - 4444:4444
+    restart: always
+    volumes:
+      - ./airflow/tmp:/opt/airflow/tmp
+
+volumes:
+  dbdata:
+
+# XXX: there are many "secret" values on this yaml file that should be moved in the future

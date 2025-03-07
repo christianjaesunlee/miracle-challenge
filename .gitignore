@@ -1,0 +1,4 @@
+/airflow/tmp/*
+*.pyc
+.idea/*
+.DS_Store

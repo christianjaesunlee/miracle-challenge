@@ -1,0 +1,5 @@
+mysql-connector-python==9.2.0
+pandas==2.2.3
+selenium==4.29.0
+apache-airflow==2.10.5
+Flask==2.2.3
