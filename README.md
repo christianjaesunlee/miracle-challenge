@@ -32,7 +32,5 @@ Aside from completing the requirements, improvements include but are not limited
  * maybe make database updates atomic to avoid concurrency issues with queries
  * iterate over the rest of the pages of EudraCT instead of just the first 3
  * move SQL queries in `mysql_manager.py` to their own file
-
-## How I would approach some of the incomplete requirements
-* the database rollback design could be achieved by taking snapshots of the database and archiving them in AWS S3.
-* I forgot to exclusively use the combined_trials table for the visualizations, but the SQL queries wouldn't need much changing.
+ * save MySQL backups in S3 or somewhere appropriate
+ * if we want to dump tablespaces as well in the mysqldump, need to grant extra privileges

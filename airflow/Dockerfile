@@ -5,3 +5,7 @@ RUN pip install selenium==4.29.0
 RUN pip install mysql-connector-python==9.2.0
 RUN pip install pandas==2.2.3
 RUN pip install selenium==4.29.0
+
+USER root
+RUN apt-get update && apt-get install -y default-mysql-client
+USER airflow
