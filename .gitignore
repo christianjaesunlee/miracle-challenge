@@ -1,4 +1,5 @@
 /airflow/tmp/*
+!/airflow/tmp/.gitkeep
 *.pyc
 .idea/*
 .DS_Store
