@@ -21,7 +21,7 @@ I am using Airflow to run and schedule the web scraper pipeline, and MySQL as th
 currently, the webpage and API server are hosted locally.
 
 ## Future Work
-Aside from completing the requirements, improvements include but are not limited to:
+Possible improvements include but are not limited to:
  * instead of putting all the web scraper code in the dags folder, create a python packaage and import it
  * the web-scrapers could be made more resilient to changes in the web pages using more edge case handling
  * separate Airflow metadata and the trial tables into separate databases
