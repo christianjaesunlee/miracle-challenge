@@ -29,6 +29,7 @@ DOWNLOAD_DIRECTORY = os.environ.get("DOWNLOAD_DIR", "")
 
 
 def download_wait(timeout=600):
+    """Waits for a Chrome download to finish."""
     start_time = time.time()
     dl_wait = True
     while dl_wait:
@@ -73,6 +74,7 @@ class ClinicalTrialsScraperFactory:
             self.driver.find_element(By.XPATH, DESELECT_ALL).click()
             self.driver.find_element(By.XPATH, NCT_CHECKBOX).click()
             self.driver.find_element(By.XPATH, STUDY_TITLE_CHECKBOX).click()
+            # here we need to start scrolling down to the elements so they are clickable
             conditions_checkbox = self.driver.find_element(By.XPATH, CONDITIONS_CHECKBOX)
             actions.move_to_element(conditions_checkbox).perform()
             conditions_checkbox.click()

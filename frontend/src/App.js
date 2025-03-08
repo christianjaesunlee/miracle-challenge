@@ -6,9 +6,9 @@ import {
 
 function App() {
     // State for sponsor bar chart
-    const [barData, setBarData] = useState([]);
+    const [sponsorData, setSponsorData] = useState([]);
     // State for condition pie chart
-    const [pieData, setPieData] = useState([]);
+    const [conditionData, setConditionData] = useState([]);
     // State for us total
     const [usTotal, setUsTotal] = useState([]);
     // State for eu total
@@ -20,7 +20,7 @@ function App() {
         fetch('http://localhost:5000/api/sponsor?limit=20') // limit number of sponsors shown to top 20 plus "other"
             .then(response => response.json())
             .then(data => {
-                setBarData(data);
+                setSponsorData(data);
             })
             .catch(err => console.error("Error fetching sponsor data:", err));
 
@@ -28,7 +28,7 @@ function App() {
         fetch('http://localhost:5000/api/condition')
             .then(response => response.json())
             .then(data => {
-                setPieData(data);
+                setConditionData(data);
             })
             .catch(err => console.error("Error fetching condition data:", err));
 
@@ -65,7 +65,7 @@ function App() {
             <h2>Clinical Trials by Sponsor</h2>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                    data={barData}
+                    data={sponsorData}
                     margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
@@ -82,7 +82,7 @@ function App() {
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
-                        data={pieData}
+                        data={conditionData}
                         dataKey="value"
                         nameKey="name"
                         cx="50%"
@@ -91,7 +91,7 @@ function App() {
                         fill="#8884d8"
                         label
                     >
-                        {pieData.map((entry, index) => (
+                        {conditionData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
                                 fill={COLORS[index % COLORS.length]}

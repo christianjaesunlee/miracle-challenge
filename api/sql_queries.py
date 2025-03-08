@@ -1,4 +1,4 @@
-# XXX: make sure to include the limit parameter twice!
+# XXX: make sure to include the limit parameter twice for this one!
 limit_sponsors = """WITH sponsor_counts AS (
     SELECT
         sponsor,

@@ -17,6 +17,7 @@ DB_NAME = os.environ.get("DB_NAME", "")
 
 @app.route("/api/us_count")
 def get_total_us_trials():
+    """Returns the number of trials from ClinicalTrials.gov (int)"""
     try:
         conn = mysql.connector.connect(
             host=DB_HOST,
@@ -35,6 +36,7 @@ def get_total_us_trials():
 
 @app.route("/api/eu_count")
 def get_total_eu_trials():
+    """Returns the number of trials from EudraCT (currently just first 3 pages of results) (int)"""
     try:
         conn = mysql.connector.connect(
             host=DB_HOST,
@@ -53,6 +55,13 @@ def get_total_eu_trials():
 
 @app.route("/api/sponsor")
 def get_sponsor_breakdown():
+    """
+    Returns each sponsor and the number of times it appears in the clinical trials.
+    If the parameter `limit` is provided, then it will return the {limit} most common
+    sponsors and their number of appearances, as well as `Other` with the count of all the rest.
+
+    format: [{name: "sponsor1", value: "500"}, {name: "sponsor2", value: "400"}, ...]
+    """
     try:
         conn = mysql.connector.connect(
             host=DB_HOST,
@@ -75,6 +84,10 @@ def get_sponsor_breakdown():
 
 @app.route("/api/compare_week")
 def get_compare_week():
+    """
+    Returns the number of trials for each time the pipeline was run in the past week, and their dates
+    format: [{"snapshot_date":"Sat, 08 Mar 2025 03:20:22 GMT","trial_count":529487}, ...]
+    """
     try:
         conn = mysql.connector.connect(
             host=DB_HOST,
@@ -93,6 +106,10 @@ def get_compare_week():
 
 @app.route("/api/condition")
 def get_condition_breakdown():
+    """
+    Returns conditions and their prevalence in the clinical trials
+    format: [{"name":"Other","value":339396},{"name":"Cancer","value":89186}, ...]
+    """
     try:
         conn = mysql.connector.connect(
             host=DB_HOST,
@@ -112,10 +129,10 @@ def get_condition_breakdown():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# given a condition, classify it as one of the commonly seen conditions or "other"
 # These classifications are not perfect, perhaps a future version could use a language model to actually analyze the
 # conditions
 def classify_condition(condition: str):
+    """given a condition, classify it as one of the commonly seen conditions or 'other'"""
     condition = condition.lower()
     if check_match(condition, ["cancer", "leukemia", "lymphoma", "sarcoma", "carcinoma", "myeloma", "melanoma", "tumor"]):
         return "Cancer"
