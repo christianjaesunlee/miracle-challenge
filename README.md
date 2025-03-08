@@ -34,3 +34,4 @@ Aside from completing the requirements, improvements include but are not limited
  * move SQL queries in `mysql_manager.py` to their own file
  * save MySQL backups in S3 or somewhere appropriate
  * if we want to dump tablespaces as well in the mysqldump, need to grant extra privileges
+ * add tests
