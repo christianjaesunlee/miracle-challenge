@@ -80,6 +80,27 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/tmp:/opt/airflow/tmp
 
+  api:
+    build: ./api
+    container_name: my_flask_api
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: myuser
+      DB_PASSWORD: mypass
+      DB_NAME: mydatabase
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build: ./frontend
+    container_name: my_react_frontend
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
+
   selenium:
     container_name: remote_chromedriver
     image: seleniarm/standalone-chromium:latest

@@ -56,7 +56,7 @@ class MySQLManager:
     def update_combined(self):
         logger.info("Updating combined table")
         self.cursor.execute(
-            "INSERT INTO combined_trials (study_id, name, conditions, sponsor, source) "
+            "REPLACE INTO combined_trials (study_id, name, conditions, sponsor, source) "
             "SELECT study_id, name, conditions, sponsor, 'us' "
             "FROM us "
             "UNION ALL "
@@ -64,5 +64,5 @@ class MySQLManager:
             "FROM eu;"
         )
         logger.info("Updating trial count table")
-        self.cursor.execute("INSERT INTO trial_count (snapshot_date, trial_count) SELECT CURDATE(), COUNT(*) FROM combined_trials")
+        self.cursor.execute("INSERT INTO trial_count (snapshot_date, trial_count) SELECT NOW(), COUNT(*) FROM combined_trials")
         self.conn.commit()

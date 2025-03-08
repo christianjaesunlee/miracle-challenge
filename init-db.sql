@@ -31,6 +31,6 @@ CREATE TABLE IF NOT EXISTS combined_trials (
 
 -- to keep track of the number of trials compared to -1 week
 CREATE TABLE IF NOT EXISTS trial_count (
-    snapshot_date DATE,
+    snapshot_date TIMESTAMP,
     trial_count INT
 );
