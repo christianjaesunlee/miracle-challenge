@@ -32,6 +32,7 @@ Aside from completing the requirements, improvements include but are not limited
  * maybe make database updates atomic to avoid concurrency issues with queries
  * iterate over the rest of the pages of EudraCT instead of just the first 3
  * move SQL queries in `mysql_manager.py` to their own file
+ * add tests
 
 ## How I would approach some of the incomplete requirements
 * the database rollback design could be achieved by taking snapshots of the database and archiving them in AWS S3.
